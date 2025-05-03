@@ -5,6 +5,8 @@ db.sqlite3
 __pycache__/*
 main/__pycache__/*
 main/migrations/__pycache__/*
+main/serializers/__pycache__/*
+hackathon/__pycache__/*
 
 # Virtual environment
 venv/*
