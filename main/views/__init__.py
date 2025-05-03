@@ -1,0 +1,2 @@
+from main.views.category_views import CategoryCreateView
+from main.views.category_views import CategoryDeleteView
