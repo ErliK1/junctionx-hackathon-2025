@@ -96,7 +96,7 @@ class OrderCreateCustomSerializerMulti(serializers.Serializer):
         product = Product.objects.filter(is_customizable=True).first()
         for custom_order in custom_orders:
             order_options = custom_order.get('order_options')
-            ammount = len(order_options)
+            ammount = custom_order.get('ammount')
             all_price = 0
             order_item = OrderItem.objects.create(product=product, total_price=0, total_ammount=ammount, order_id=0)
             for order_option in order_options:
@@ -115,7 +115,7 @@ class OrderCreateCustomSerializerMulti(serializers.Serializer):
         for normal_order in normal_orders:
             product: Product = normal_order.get('product')
             ammount = normal_order.get('ammount')
-            order_item = OrderItem.objects.create(product=product, total_price=product.base_price * ammount, total_ammount=ammount)
+            order_item = OrderItem.objects.create(product=product, total_price=product.base_price * ammount, total_ammount=ammount, order_id=0)
             order_item_list.append(order_item)
         return order_item_list
 
