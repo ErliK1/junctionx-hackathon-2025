@@ -171,6 +171,6 @@ class Giftcard(models.Model):
     to_user = models.ForeignKey(User, related_name='to_giftcards', on_delete=models.CASCADE)
     message = models.TextField(null=True, blank=True)
     total_ammount = models.IntegerField()
-    current_amount = models.IntegerField()
+    current_ammount = models.IntegerField()
     creation_date = models.DateTimeField(auto_now_add=True)
 
