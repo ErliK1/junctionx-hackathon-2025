@@ -130,6 +130,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, related_name='order_items',
                                 on_delete=models.CASCADE)
     total_price = models.IntegerField()
+    total_ammount = models.DecimalField(max_digits=10, decimal_places=2)
     item_size = models.ForeignKey(ItemSize, related_name='order_items',
                                   on_delete=models.CASCADE,
                                   null=True, blank=True)

@@ -18,7 +18,7 @@ from main.pagination import CustomPagination
 @api_view(['GET'])
 def test_request(request: Request, *args, **kwargs):
     print(kwargs.get('id'))
-    print(request)
+    print(request.user)
     return Response({'message': 'hello world'}, status=status.HTTP_200_OK)
 
 
@@ -49,4 +49,6 @@ def create_user_groups(request):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+
 
