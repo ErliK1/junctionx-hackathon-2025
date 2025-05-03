@@ -4,11 +4,12 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from django.contrib.auth.models import Group
 
 from main.models import User
-from main.serializers.main_serializer import UserCreateSerializer
+from main.serializers.main_serializer import UserCreateSerializer, MyTokenObtainPairSerializer
 from main.pagination import CustomPagination
 
 # Create your views here.
@@ -44,4 +45,8 @@ def create_user_groups(request):
     Group.objects.create(name='Admin')
     Group.objects.create(name='Bartender')
     return Response({'message': 'Done successfully'}, status=status.HTTP_201_CREATED)
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
