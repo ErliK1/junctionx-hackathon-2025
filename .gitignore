@@ -27,9 +27,3 @@ staticfiles/
 
 # macOS
 .DS_Store
-
-# Te pythonit
-__pycache__/
-*.pyc
-*.pyo
-
