@@ -43,7 +43,7 @@ class User(AbstractUser):
 
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_number']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_number', 'birthday']
 
     objects = CustomUserManager()
 
@@ -68,6 +68,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     base_price = models.IntegerField(default=0)
     is_customizable = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='product_images/', null=True, blank=True)
     product_type = models.ForeignKey('ProductType', related_name='products',
                                      on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name='products',
@@ -156,7 +157,7 @@ class Order(models.Model):
     is_online = models.BooleanField(default=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     total_price = models.IntegerField()
-    address = models.ForeignKey(Address, related_name='orders', on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, related_name='orders',
                              on_delete=models.CASCADE, null=True, blank=True)
 
