@@ -1,6 +1,6 @@
 from django.urls import path
 
-from main.views import test_request, CreateUserView, GetUsersView
+from main.views import test_request, CreateUserView, GetUsersView, create_user_groups
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -12,5 +12,6 @@ urlpatterns = [
     path('create/user/', CreateUserView.as_view()),
     path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('get/users/', GetUsersView.as_view())
+    path('get/users/', GetUsersView.as_view()),
+    path('create/groups/', create_user_groups),
 ]

@@ -5,6 +5,8 @@ from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView
 
+from django.contrib.auth.models import Group
+
 from main.models import User
 from main.serializers.main_serializer import UserCreateSerializer
 from main.pagination import CustomPagination
@@ -29,7 +31,17 @@ class CreateUserView(CreateAPIView):
             return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
         return response
 
+
 class GetUsersView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
     pagination_class = CustomPagination
+
+
+@api_view(['post'])
+def create_user_groups(request):
+    Group.objects.create(name='Normal')
+    Group.objects.create(name='Admin')
+    Group.objects.create(name='Bartender')
+    return Response({'message': 'Done successfully'}, status=status.HTTP_201_CREATED)
+
