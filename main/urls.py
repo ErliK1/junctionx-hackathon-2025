@@ -1,5 +1,5 @@
 from django.urls import path
-from main.views.category_views import CategoryCreateView, CategoryDeleteView
+from main.views.category_views import CategoryCreateView, CategoryDeleteView, CategoryListWithProductsView
 from main.views.product_views import ProductCreateView, ProductDeleteView
 from main.views.product_type_views import ProductTypeCreateView, ProductTypeDeleteView
 from main.views.giftcard_views import GiftcardCreateView, GiftcardDeleteView
@@ -20,6 +20,7 @@ urlpatterns = [
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('get/users/', GetUsersView.as_view()),
     path('create/groups/', create_user_groups),
+    path('categories/products/', CategoryListWithProductsView.as_view(), name='category-products'),
     path('categories/', CategoryCreateView.as_view(), name='category-create'),
     path('categories/<int:pk>/', CategoryDeleteView.as_view(), name='category-delete'),
     path('products/', ProductCreateView.as_view(), name='product-create'),

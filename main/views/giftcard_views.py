@@ -1,27 +1,40 @@
-from rest_framework.generics import CreateAPIView, DestroyAPIView
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from main.models import Giftcard, User
+from rest_framework.generics import DestroyAPIView
+from rest_framework.permissions import IsAuthenticated
+from main.models import Giftcard
 from main.serializers.giftcard_serializer import GiftcardSerializer
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from django.utils.translation import gettext_lazy as _
 
-class GiftcardCreateView(CreateAPIView):
-    queryset = Giftcard.objects.all()
-    serializer_class = GiftcardSerializer
 
-    def create(self, request, *args, **kwargs):
-        from_user_id = request.data.get('from_user')
-        to_user_id = request.data.get('to_user')
+class GiftcardCreateView(APIView):
+    permission_classes = [IsAuthenticated]
 
-        if not User.objects.filter(id=from_user_id).exists():
-            return Response({"message": "Invalid 'from_user' ID."}, status=status.HTTP_400_BAD_REQUEST)
-        if not User.objects.filter(id=to_user_id).exists():
-            return Response({"message": "Invalid 'to_user' ID."}, status=status.HTTP_400_BAD_REQUEST)
-
-        response = super().create(request, *args, **kwargs)
-        if response.status_code == status.HTTP_201_CREATED:
-            return Response({"message": "Giftcard created successfully"}, status=status.HTTP_201_CREATED)
-        return response
-
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['email', 'total_ammount'],
+            properties={
+                'email': openapi.Schema(type=openapi.TYPE_STRING, format='email', description='Email of the recipient user'),
+                'total_ammount': openapi.Schema(type=openapi.TYPE_INTEGER, description='Total amount of money'),
+                'message': openapi.Schema(type=openapi.TYPE_STRING, description='Optional message', default='')
+            }
+        ),
+        responses={201: 'Giftcard created', 400: 'Validation error'}
+    )
+    
+    def post(self, request):
+        serializer = GiftcardSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            giftcard = serializer.save()
+            return Response({
+                'message': 'Giftcard sent successfully!',
+                'giftcard_id': giftcard.id
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GiftcardDeleteView(DestroyAPIView):
     queryset = Giftcard.objects.all()

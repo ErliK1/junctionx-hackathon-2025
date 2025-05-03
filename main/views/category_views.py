@@ -4,7 +4,10 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, DestroyAPIView
 from main.models import Category
 from main.serializers.category_serializer import CategorySerializer
-from django.shortcuts import get_object_or_404
+from main.serializers.category_serializer import CategoryWithProductsSerializer
+from django.db import models
+from main.models import Product
+from main.pagination import CustomPagination
 
 class CategoryCreateView(CreateAPIView):
     queryset = Category.objects.all()
@@ -31,3 +34,21 @@ class CategoryDeleteView(DestroyAPIView):
                 status=status.HTTP_200_OK
             )
         return response
+
+
+class CategoryListWithProductsView(APIView):
+    pagination_class = CustomPagination
+
+    def get(self, request):
+
+        categories = Category.objects.prefetch_related(
+            models.Prefetch(
+                'products',
+                queryset=Product.objects.filter(
+                    product_type__is_deliverable=True
+                )
+            )
+        ).all()
+        
+        serializer = CategoryWithProductsSerializer(categories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
