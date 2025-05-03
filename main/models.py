@@ -3,6 +3,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser,Group
 from django.contrib.auth.base_user import BaseUserManager
 
+option_choices = (
+    ('milk', 'milk'),
+    ('coffe', 'coffee'),
+)
+
 # Create your models here.
 
 
@@ -98,6 +103,7 @@ class Option(models.Model):
     base_price = models.IntegerField()
     product_type = models.ForeignKey(ProductType, related_name='options',
                                      on_delete=models.CASCADE)
+    type = models.CharField(max_length=100, choices=option_choices, null=True, blank=True)
 
     def __str__(self):
         return self.name

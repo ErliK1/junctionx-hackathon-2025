@@ -3,8 +3,7 @@ from main.views.category_views import CategoryCreateView, CategoryDeleteView, Ca
 from main.views.product_views import ProductCreateView, ProductDeleteView
 from main.views.product_type_views import ProductTypeCreateView, ProductTypeDeleteView
 from main.views.giftcard_views import GiftcardCreateView, GiftcardDeleteView
-
-
+from main.views.order_views import CreateSupplyOrder, CreateNormalCustomOrder, OptionListApiView
 
 from main.view import test_request, CreateUserView, GetUsersView, create_user_groups, MyTokenObtainPairView
 
@@ -29,4 +28,7 @@ urlpatterns = [
     path('product-types/<int:pk>/', ProductTypeDeleteView.as_view(), name='product-type-delete'),
     path('giftcards/', GiftcardCreateView.as_view(), name='giftcard-create'),
     path('giftcards/<int:pk>/', GiftcardDeleteView.as_view(), name='giftcard-delete'),
+    path('create/supply/order/', CreateSupplyOrder.as_view(), name='supply-order-create'),
+    path('create/order/', CreateNormalCustomOrder.as_view()),
+    path('options/', OptionListApiView.as_view()),
 ]
