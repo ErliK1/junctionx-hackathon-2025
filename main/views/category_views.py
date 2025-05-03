@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, DestroyAPIView
 from main.models import Category
@@ -39,16 +40,15 @@ class CategoryDeleteView(DestroyAPIView):
 class CategoryListWithProductsView(APIView):
     pagination_class = CustomPagination
 
-    def get(self, request):
-
+    def get(self, request: Request, *args, **kwargs):
+        product_type = int(request.query_params.get('is_deliverable'))
         categories = Category.objects.prefetch_related(
             models.Prefetch(
                 'products',
                 queryset=Product.objects.filter(
-                    product_type__is_deliverable=True
+                    product_type__is_deliverable=bool(product_type)
                 )
             )
         ).all()
-        
         serializer = CategoryWithProductsSerializer(categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

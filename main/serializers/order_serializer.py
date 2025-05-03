@@ -34,5 +34,24 @@ class OrderCreateSerialzer(serializers.Serializer):
         return order
 
 
+class OrderCreateSerializerMulti(serializers.Serializer):
+    orders = OrderCreateSerialzer(many=True)
+
+    def create(self, validated_data):
+        orders = validated_data.get('orders')
+        for order in orders:
+            product: Product = validated_data.get('product')
+            address = validated_data.get('address')
+            address_obj = Address.objects.create(**address)
+            ammount = validated_data.get('amount')
+            total_price = product.base_price * ammount
+            order = Order.objects.create(total_price=total_price, is_online=True,
+                                         address=address)
+            order_item = OrderItem.objects.create(product=product, 
+                                                  total_price=total_price,
+                                                  total_ammount=ammount,
+                                                  order=order)
+        return order
+
 
 

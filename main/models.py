@@ -72,7 +72,7 @@ class Product(models.Model):
     product_type = models.ForeignKey('ProductType', related_name='products',
                                      on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name='products',
-                                 on_delete=models.CASCADE)
+                                 on_delete=models.CASCADE, null=True, blank=True)
     stock_amount = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
@@ -131,7 +131,8 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, related_name='order_items',
                                 on_delete=models.CASCADE)
     total_price = models.IntegerField()
-    total_ammount = models.DecimalField(max_digits=10, decimal_places=2)
+    total_ammount = models.DecimalField(max_digits=10, decimal_places=2,
+                                        null=True, blank=True)
     item_size = models.ForeignKey(ItemSize, related_name='order_items',
                                   on_delete=models.CASCADE,
                                   null=True, blank=True)

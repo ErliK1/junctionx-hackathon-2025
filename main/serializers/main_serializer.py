@@ -9,7 +9,7 @@ from main.models import User
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'birthday', 'password')
+        fields = ('email', 'first_name', 'last_name', 'birthday', 'phone_number', 'password')
 
     def create(self, validated_data):
         group = Group.objects.filter(name__icontains='Normal').first()
@@ -21,14 +21,13 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user: User):
         token = super().get_token(user)
-
         # Add custom claims
         token['email'] = user.email
         token['first_name'] = user.first_name
         token['last_name'] = user.last_name
         token['birthday'] = str(user.birthday)
         token['group'] = user.role.name
-
+        token['phone_number'] = user.phone_number
         # Add any other data you want in the token
         return token
 
