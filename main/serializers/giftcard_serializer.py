@@ -24,3 +24,12 @@ class GiftcardSerializer(serializers.ModelSerializer):
             **validated_data
         )
         return giftcard
+
+class GiftcardRecievedSerializer(serializers.ModelSerializer):
+    from_first_name = serializers.CharField(source='from_user.first_name', read_only=True)
+    from_last_name = serializers.CharField(source='from_user.last_name', read_only=True)
+
+    class Meta:
+        model = Giftcard
+        fields = '__all__'
+

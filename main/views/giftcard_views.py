@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.generics import DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from main.models import Giftcard
-from main.serializers.giftcard_serializer import GiftcardSerializer
+from main.serializers.giftcard_serializer import GiftcardSerializer, GiftcardRecievedSerializer
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.translation import gettext_lazy as _
@@ -35,6 +35,15 @@ class GiftcardCreateView(APIView):
                 'giftcard_id': giftcard.id
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserReceivedGiftcardsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        giftcards = Giftcard.objects.filter(to_user=request.user)
+        serializer = GiftcardRecievedSerializer(giftcards, many=True)
+        return Response(serializer.data)
 
 class GiftcardDeleteView(DestroyAPIView):
     queryset = Giftcard.objects.all()
