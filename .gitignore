@@ -6,6 +6,7 @@ __pycache__/*
 main/__pycache__/*
 main/migrations/__pycache__/*
 main/serializers/__pycache__/*
+main/views/__pycache__/*
 hackathon/__pycache__/*
 
 # Virtual environment
