@@ -37,7 +37,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=100)
     birthday = models.DateField()
     registered_date = models.DateField(auto_now_add=True)
-    loyalty_ponts = models.IntegerField(default=0)
+    loyalty_points = models.IntegerField(default=0)
     role = models.ForeignKey(Group, related_name='users',
                              on_delete=models.CASCADE)
 
