@@ -48,3 +48,10 @@ class GetUserOrdersView(generics.ListAPIView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user).order_by('-creation_date')
+
+class GetBartenderOrdersView(generics.ListAPIView):
+    serializer_class = UserOrderListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Order.objects.filter(is_online=False).order_by('-creation_date')

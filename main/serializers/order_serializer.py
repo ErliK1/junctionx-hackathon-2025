@@ -120,7 +120,6 @@ class UserOrderListSerializer(serializers.ModelSerializer):
         fields = ['id', 'creation_date', 'total_price','order_items']
 
     def get_order_items(self, obj):
-        # Get all order items related to this order
         items = obj.order_items.all()
 
         result = []
@@ -133,7 +132,6 @@ class UserOrderListSerializer(serializers.ModelSerializer):
                 },
             }
 
-            # Get related order options for the item
             order_options = item.order_options.all()
             if order_options:
                 item_data['order_options'] = [

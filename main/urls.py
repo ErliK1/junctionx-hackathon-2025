@@ -2,7 +2,7 @@ from django.urls import path
 from main.views.category_views import CategoryCreateView, CategoryDeleteView, CategoryListWithProductsView
 from main.views.product_views import ProductCreateView, ProductDeleteView
 from main.views.product_type_views import ProductTypeCreateView, ProductTypeDeleteView
-from main.views.order_views import CreateSupplyOrder, CreateNormalCustomOrder, OptionListApiView, GetUserOrdersView
+from main.views.order_views import CreateSupplyOrder, CreateNormalCustomOrder, OptionListApiView, GetUserOrdersView, GetBartenderOrdersView
 from main.views.giftcard_views import GiftcardCreateView, GiftcardDeleteView, UserReceivedGiftcardsView
 
 
@@ -23,6 +23,7 @@ urlpatterns = [
     path('user/giftcards', UserReceivedGiftcardsView.as_view(), name='received-giftcards'),
     path('user/profile/', get_current_user),
     path('user/orders/', GetUserOrdersView.as_view(), name='user-orders'),
+    path('orders/bartender', GetBartenderOrdersView.as_view(), name='offline-orders'),
     path('create/groups/', create_user_groups),
     path('categories/products/', CategoryListWithProductsView.as_view(), name='category-products'),
     path('categories/', CategoryCreateView.as_view(), name='category-create'),
