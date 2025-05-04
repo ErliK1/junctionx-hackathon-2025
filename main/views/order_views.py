@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from main.models import Order, Product, Option
 from main.serializers.order_serializer import OrderCreateSerialzer, OrderCreateSerializerMulti, \
-    OrderCreateCustomSerializerMulti, OptionListSerialier, UserOrderListSerializer
+    OrderCreateCustomSerializerMulti, OptionListSerialier, UserOrderListSerializer, OrderUpdateStatusSerializer
 
 
 class CreateSupplyOrder(generics.CreateAPIView):
@@ -54,4 +54,20 @@ class GetBartenderOrdersView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Order.objects.filter(is_online=False).order_by('-creation_date')
+        return Order.objects.filter(is_online=False, status='Pending').order_by('-creation_date')
+
+
+class OrderUpdateStatusView(generics.CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderUpdateStatusSerializer
+
+    def post(self, request, *args, **kwargs):
+        order_id = request.data.get('order_id')
+        if not order_id:
+            return Response({'message': 'Order id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        order = Order.objects.filter(id=order_id).first()
+        if not order:
+            return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+        order.status = 'Finished'
+        order.save()
+        return Response({'message': 'Order updated successfully'}, status=status.HTTP_200_OK)

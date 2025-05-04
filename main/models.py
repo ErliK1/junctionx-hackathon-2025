@@ -8,6 +8,11 @@ option_choices = (
     ('coffe', 'coffee'),
 )
 
+order_options = (
+    ('Pending', 'Pending'),
+    ('Finished', 'Finished')
+)
+
 # Create your models here.
 
 
@@ -165,8 +170,10 @@ class Order(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     total_price = models.IntegerField()
     address = models.ForeignKey(Address, related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
+    status = models.CharField(max_length=100, choices=order_options, default='Pending')
     user = models.ForeignKey(User, related_name='orders',
                              on_delete=models.CASCADE, null=True, blank=True)
+
 
 
 

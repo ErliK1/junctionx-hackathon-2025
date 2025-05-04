@@ -11,7 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import Group
 
 from main.models import User
-from main.serializers.main_serializer import UserCreateSerializer, MyTokenObtainPairSerializer, UserProfileSerializer
+from main.serializers.main_serializer import UserCreateSerializer, MyTokenObtainPairSerializer, UserProfileSerializer, \
+    UserCreateAdminSerializer, UserCreateBartenderSerializer
 from main.pagination import CustomPagination
 
 # Create your views here.
@@ -56,6 +57,27 @@ def create_user_groups(request):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+
+class CreateAdminView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserCreateAdminSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super(CreateAdminView, self).create(request, *args, **kwargs)
+        if (response.status_code == status.HTTP_201_CREATED):
+            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+        return response
+
+class CreateBartenderView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserCreateBartenderSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super(CreateBartenderView, self).create(request, *args, **kwargs)
+        if (response.status_code == status.HTTP_201_CREATED):
+            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+        return response
 
 
 

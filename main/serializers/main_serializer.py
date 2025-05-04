@@ -24,6 +24,26 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(role=group, **validated_data)
         return user
 
+class UserCreateBartenderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'birthday', 'phone_number', 'password')
+
+    def create(self, validated_data):
+        group = Group.objects.filter(name__icontains='Bartender').first()
+        user = User.objects.create_user(role=group, **validated_data)
+        return user
+
+class UserCreateAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'birthday', 'phone_number', 'password')
+
+    def create(self, validated_data):
+        group = Group.objects.filter(name__icontains='Admin').first()
+        user = User.objects.create_user(role=group, **validated_data)
+        return user
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -38,4 +58,5 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['phone_number'] = user.phone_number
         # Add any other data you want in the token
         return token
+
 

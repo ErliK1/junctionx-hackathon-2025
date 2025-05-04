@@ -2,12 +2,14 @@ from django.urls import path
 from main.views.category_views import CategoryCreateView, CategoryDeleteView, CategoryListWithProductsView
 from main.views.product_views import ProductCreateView, ProductDeleteView
 from main.views.product_type_views import ProductTypeCreateView, ProductTypeDeleteView
-from main.views.order_views import CreateSupplyOrder, CreateNormalCustomOrder, OptionListApiView, GetUserOrdersView, GetBartenderOrdersView
+from main.views.order_views import CreateSupplyOrder, CreateNormalCustomOrder, OptionListApiView, GetUserOrdersView, \
+    GetBartenderOrdersView, OrderUpdateStatusView
 from main.views.giftcard_views import GiftcardCreateView, GiftcardDeleteView, UserReceivedGiftcardsView
 
 
 
-from main.view import test_request, CreateUserView, GetUsersView, create_user_groups, MyTokenObtainPairView, get_current_user
+from main.view import test_request, CreateUserView, GetUsersView, create_user_groups, MyTokenObtainPairView, \
+    get_current_user, CreateBartenderView, CreateAdminView
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -37,4 +39,9 @@ urlpatterns = [
     path('create/supply/order/', CreateSupplyOrder.as_view(), name='supply-order-create'),
     path('create/order/', CreateNormalCustomOrder.as_view()),
     path('options/', OptionListApiView.as_view()),
+    path('order/complete/', OrderUpdateStatusView.as_view(), name='order-complete'),
+
+    path('create/bartender/', CreateBartenderView.as_view(), name='bartender-create'),
+
+    path('create/admin/', CreateAdminView.as_view(), name='admin-create'),
 ]

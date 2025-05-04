@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from main.models import Order, Product, Address, OrderItem, Option, OrderOption
+from main.models import Order, Product, Address, OrderItem, Option, OrderOption, ProductType
 
 
 class OrderCreateSerialzer(serializers.ModelSerializer):
@@ -74,6 +74,7 @@ class OrderCreateCustomSerializerMulti(serializers.Serializer):
         if request.user and request.user.is_authenticated:
             order.user = request.user
             request.user.loyalty_points = order.total_price // 7
+            request.user.save()
         order.save()
         return order
 
@@ -104,6 +105,39 @@ class OrderCreateCustomSerializerMulti(serializers.Serializer):
             order_item = OrderItem.objects.create(product=product, total_price=product.base_price * ammount, total_ammount=ammount, order_id=0)
             order_item_list.append(order_item)
         return order_item_list
+class ProductItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('id', 'name', 'image')
+
+
+class OptionListSerializerForProduct(serializers.ModelSerializer):
+    class Meta:
+        model = Option
+        fields = ('id', 'name', 'base_price')
+
+
+class OptionOrderListSerializer(serializers.ModelSerializer):
+    option = OptionListSerializerForProduct()
+    class Meta:
+        model = OrderOption
+        fields = ('option', 'ammount')
+
+class OrderItemOrderListSerializer(serializers.ModelSerializer):
+    product = ProductItemSerializer()
+    options = serializers.SerializerMethodField()
+
+    class Meta:
+        model = OrderItem
+        fields = ('id', 'total_price', 'total_ammount', 'product', 'options')
+
+    def get_options(self, obj: OrderItem):
+        order_options = obj.order_options
+        if not order_options:
+            return []
+        order_option_serializer = OptionOrderListSerializer(order_options, many=True)
+        return order_option_serializer.data
+
 
 
 class OptionListSerialier(serializers.ModelSerializer):
@@ -119,31 +153,36 @@ class UserOrderListSerializer(serializers.ModelSerializer):
         model = Order
         fields = ['id', 'creation_date', 'total_price','order_items']
 
-    def get_order_items(self, obj):
+    def get_order_items(self, obj: Order):
         items = obj.order_items.all()
-
         result = []
-        for item in items:
-            item_data = {
-                'total_ammount': item.total_ammount,
-                'total_price': item.total_price,
-                'product': {
-                    'name': item.product.name,
-                },
-            }
+        # for item in items:
+        #     item_data = {
+        #         'total_ammount': item.total_ammount,
+        #         'total_price': item.total_price,
+        #         'product': {
+        #             'name': item.product.name,
+        #             'image': item.product.image.path
+        #         },
+        #     }
+        #
+        #     order_options = item.order_options.all()
+        #     if order_options:
+        #         item_data['order_options'] = [
+        #             {
+        #                 'ammount': opt.ammount,
+        #                 'option': {
+        #                     'name': opt.option.name,
+        #                     'base_price': opt.option.base_price,
+        #                 },
+        #             } for opt in order_options
+        #         ]
+        #
+        #     result.append(item_data)
+        order_items_serializer = OrderItemOrderListSerializer(items, many=True)
+        return order_items_serializer.data
 
-            order_options = item.order_options.all()
-            if order_options:
-                item_data['order_options'] = [
-                    {
-                        'ammount': opt.ammount,
-                        'option': {
-                            'name': opt.option.name,
-                            'base_price': opt.option.base_price,
-                        },
-                    } for opt in order_options
-                ]
-
-            result.append(item_data)
-
-        return result
+class OrderUpdateStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ('status', )
