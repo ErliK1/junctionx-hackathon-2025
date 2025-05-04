@@ -5,6 +5,14 @@ from django.contrib.auth.models import Group
 
 from main.models import User
 
+from rest_framework import serializers
+from main.models import User
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ('password',)  # Exclude the password field
+
 
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:

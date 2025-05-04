@@ -13,25 +13,11 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = ('country', 'city', 'street', 'building', 'zip_code')
 
+
 class OrderCreateSerialzer(serializers.Serializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
     ammount = serializers.DecimalField(max_digits=10, decimal_places=2)
 
-
-    # def create(self, validated_data):
-    #     product: Product = validated_data.get('product')
-    #     address = validated_data.get('address')
-    #     address_obj = Address.objects.create(**address)
-    #     ammount = validated_data.get('amount')
-    #     total_price = product.base_price * ammount
-    #     order = Order.objects.create(total_price=total_price, is_online=True,
-    #                                  address=address)
-    #     order_item = OrderItem.objects.create(product=product, 
-    #                                           total_price=total_price,
-    #                                           total_ammount=ammount,
-    #                                           order=order)
-    #     return order
-    #
 
 class OrderCreateSerializerMulti(serializers.Serializer):
     orders = OrderCreateSerialzer(many=True)
@@ -58,6 +44,7 @@ class OrderCreateSerializerMulti(serializers.Serializer):
         order1.save()
         return order1
 
+
 class OrderOptionSerializer(serializers.Serializer):
     option = serializers.PrimaryKeyRelatedField(queryset=Option.objects.all())
     ammount = serializers.DecimalField(max_digits=10, decimal_places=2)
@@ -66,7 +53,6 @@ class OrderOptionSerializer(serializers.Serializer):
 class OrderCreateCustomSerializer(serializers.Serializer):
      order_options = OrderOptionSerializer(many=True)
      ammount = serializers.DecimalField(max_digits=10, decimal_places=2)
-
 
 
 class OrderCreateCustomSerializerMulti(serializers.Serializer):
@@ -126,6 +112,40 @@ class OptionListSerialier(serializers.ModelSerializer):
         fields = ('id', 'name', 'type')
 
 
+class UserOrderListSerializer(serializers.ModelSerializer):
+    order_items = serializers.SerializerMethodField()
 
+    class Meta:
+        model = Order
+        fields = ['id', 'creation_date', 'total_price','order_items']
 
+    def get_order_items(self, obj):
+        # Get all order items related to this order
+        items = obj.order_items.all()
 
+        result = []
+        for item in items:
+            item_data = {
+                'total_ammount': item.total_ammount,
+                'total_price': item.total_price,
+                'product': {
+                    'name': item.product.name,
+                },
+            }
+
+            # Get related order options for the item
+            order_options = item.order_options.all()
+            if order_options:
+                item_data['order_options'] = [
+                    {
+                        'ammount': opt.ammount,
+                        'option': {
+                            'name': opt.option.name,
+                            'base_price': opt.option.base_price,
+                        },
+                    } for opt in order_options
+                ]
+
+            result.append(item_data)
+
+        return result

@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from main.models import Order, Product, Option
 from main.serializers.order_serializer import OrderCreateSerialzer, OrderCreateSerializerMulti, \
-    OrderCreateCustomSerializerMulti, OptionListSerialier
+    OrderCreateCustomSerializerMulti, OptionListSerialier, UserOrderListSerializer
 
 
 class CreateSupplyOrder(generics.CreateAPIView):
@@ -41,3 +41,10 @@ class CreateNormalCustomOrder(generics.CreateAPIView):
 class OptionListApiView(generics.ListAPIView):
     queryset = Option.objects.all()
     serializer_class = OptionListSerialier
+
+class GetUserOrdersView(generics.ListAPIView):
+    serializer_class = UserOrderListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).order_by('-creation_date')

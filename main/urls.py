@@ -2,12 +2,12 @@ from django.urls import path
 from main.views.category_views import CategoryCreateView, CategoryDeleteView, CategoryListWithProductsView
 from main.views.product_views import ProductCreateView, ProductDeleteView
 from main.views.product_type_views import ProductTypeCreateView, ProductTypeDeleteView
-from main.views.order_views import CreateSupplyOrder, CreateNormalCustomOrder, OptionListApiView
+from main.views.order_views import CreateSupplyOrder, CreateNormalCustomOrder, OptionListApiView, GetUserOrdersView
 from main.views.giftcard_views import GiftcardCreateView, GiftcardDeleteView, UserReceivedGiftcardsView
 
 
 
-from main.view import test_request, CreateUserView, GetUsersView, create_user_groups, MyTokenObtainPairView
+from main.view import test_request, CreateUserView, GetUsersView, create_user_groups, MyTokenObtainPairView, get_current_user
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -21,6 +21,8 @@ urlpatterns = [
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('get/users/', GetUsersView.as_view()),
     path('user/giftcards', UserReceivedGiftcardsView.as_view(), name='received-giftcards'),
+    path('user/profile/', get_current_user),
+    path('user/orders/', GetUserOrdersView.as_view(), name='user-orders'),
     path('create/groups/', create_user_groups),
     path('categories/products/', CategoryListWithProductsView.as_view(), name='category-products'),
     path('categories/', CategoryCreateView.as_view(), name='category-create'),

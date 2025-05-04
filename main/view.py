@@ -5,11 +5,13 @@ from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth.models import Group
 
 from main.models import User
-from main.serializers.main_serializer import UserCreateSerializer, MyTokenObtainPairSerializer
+from main.serializers.main_serializer import UserCreateSerializer, MyTokenObtainPairSerializer, UserProfileSerializer
 from main.pagination import CustomPagination
 
 # Create your views here.
@@ -21,6 +23,11 @@ def test_request(request: Request, *args, **kwargs):
     print(request.user)
     return Response({'message': 'hello world'}, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_current_user(request: Request):
+    serializer = UserProfileSerializer(request.user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CreateUserView(CreateAPIView):
     queryset = User.objects.all()
